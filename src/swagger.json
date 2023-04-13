@@ -1,0 +1,184 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Forum API",
+    "description": "Una API para que puedas contruir un foro utilizando publicacions , respuestas ,etc",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/user": {
+      "post": {
+        "tags": ["Users"],
+        "description": "Con este endpoint podraás crear un usuario",
+        "summary": "Crea un nuevo usuario en el foro",
+        "requestBody": {
+          "description": "Los campos para crear un nuevo usuario",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/login" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado"
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Validation error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Database connection error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Actualiza el nombre y apellido de un usuario",
+        "description": "Para actualizar el nombre y apellido de un usuario necesitas mandar en el body, name y el lastname y como path param el id de usuario que se va a actulizar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "El id del ususario que se va actualizar"
+          }
+        ],
+        "requestBody": {
+          "description": "Enviar datos del usuario",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/updateUser" }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
+    "/api/v1/posts?categoryId=###&limit=###&offset=###": {
+      "get": {
+        "summary": "Traer todos los posts",
+        "tags": ["Posts"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "description": "Selecciona la categoria para volver las publicaciones",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "description": "Desde donde empezara a filtrar la respuesta",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "description": "Cantidad de publicaciones que se respondera",
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/posts" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "login": {
+        "description": "La contraseña debe tener al menos 7 caracteres",
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "jace1103"
+          },
+          "email": {
+            "type": "string",
+            "example": "andree1chiquis11@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "1234567"
+          }
+        }
+      },
+      "updateUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Andree"
+          },
+          "lastname": {
+            "type": "string",
+            "example": "Chiquis"
+          }
+        }
+      },
+      "posts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 6
+            },
+            "title": {
+              "type": "string",
+              "example": "Pregunta 1"
+            },
+            "author": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "jace1103"
+                }
+              }
+            },
+            "category": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "bases de datos"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
